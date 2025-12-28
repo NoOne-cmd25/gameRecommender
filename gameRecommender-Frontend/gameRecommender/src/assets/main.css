@@ -1,0 +1,34 @@
+.el-header,
+.el-footer {
+  /* background-color: #1439b0bf; */
+  background: linear-gradient(to right, #1439b0bf, #048166);
+  display: flex;
+  width: 100%;
+  position: relative;
+}
+.el-main {
+  background-color: #f0f2f5;
+  /* background: linear-gradient(to bottom, #484789bf, #048166); */
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+}
+.el-container {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+}
+html,
+body,
+#app {
+  height: 100%;
+  width: 100%;
+}
+body {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

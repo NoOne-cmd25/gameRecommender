@@ -1,4 +1,5 @@
 package com.example.gameRecommender.service;
 
-public interface userService {
+public interface UserService {
+    public String  getGameLib(String id);
 }

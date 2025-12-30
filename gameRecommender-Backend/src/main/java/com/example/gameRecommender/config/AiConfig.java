@@ -16,7 +16,7 @@ public class AiConfig {
 
     @Bean
     public ArkService getService() {
-//        System.out.println(apiKey);
+        System.out.println(apiKey);
         ConnectionPool connectionPool = new ConnectionPool(5, 1, TimeUnit.SECONDS);
         Dispatcher dispatcher = new Dispatcher();
 

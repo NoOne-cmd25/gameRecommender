@@ -18,13 +18,13 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>2.15.0</version>
+            <version>2.13.4</version>
         </dependency>
 
         <dependency>
             <groupId>com.volcengine</groupId>
             <artifactId>volcengine-java-sdk-ark-runtime</artifactId>
-            <version>0.1.153</version>
+            <version>LATEST</version>
         </dependency>
 
         <dependency>

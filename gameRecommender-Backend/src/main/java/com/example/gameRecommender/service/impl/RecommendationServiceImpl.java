@@ -47,14 +47,20 @@ public class RecommendationServiceImpl implements RecommendationService {
 //        messages.add(systemMessage);
         messages.add(userMessage);
 
+
         BotChatCompletionRequest chatCompletionRequest = BotChatCompletionRequest.builder()
                 .botId("bot-20251223114851-rxgzx")
                 .messages(messages)
                 .build();
 
+
+
         BotChatCompletionResult chatCompletionResult =  service.createBotChatCompletion(chatCompletionRequest);
         chatCompletionResult.getChoices().forEach(choice -> System.out.println(choice.getMessage().getContent()));
-        // the references example
+
+//        return "";
+
+        //        // the references example
         if (chatCompletionResult.getReferences() != null) {
             chatCompletionResult.getReferences().forEach(ref -> System.out.println(ref.getUrl()));
         }

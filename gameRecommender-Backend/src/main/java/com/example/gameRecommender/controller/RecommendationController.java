@@ -15,13 +15,11 @@ public class RecommendationController {
     private RecommendationService recommendationService;
 
     @PostMapping("/doRecommendation")
-    public String doRecommendation(
-            @RequestBody Map<String, Object>mp
-    ) {
+    public String doRecommendation(@RequestBody Map<String, Object>mp)
+    {
         String userId = (String) mp.get("userId");
         String userPrompt = (String) mp.get("userPrompt");
-//
-////        System.out.println(userId.charAt(2));
+
         System.out.println(userId);
         System.out.println(userPrompt);
 

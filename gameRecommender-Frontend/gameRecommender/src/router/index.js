@@ -1,4 +1,5 @@
 // import Vue from 'vue'
+// import { pa } from 'element-plus/es/locale'
 import { createRouter, createWebHashHistory } from 'vue-router'
 
 // Vue.use(VueRouter)
@@ -14,6 +15,16 @@ const routes = [
     name: 'Test',
     component: () => import('../views/elements/test.vue'),
   },
+  {
+    path:'/login',
+    name:'Login',
+    component: () => import('../views/elements/loginPage.vue'),
+  },
+  {
+    path:'/data',
+    name:'Data',
+    component: () => import('../views/elements/dataPage.vue'),
+  }
 ]
 
 // const router = new VueRouter({

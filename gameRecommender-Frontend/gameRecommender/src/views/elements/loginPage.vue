@@ -1,26 +1,36 @@
 <template>
   <div class="common-layout">
     <el-container>
-      <el-header class="page-header">steam游戏ai推荐系统</el-header>
+      <el-header class="page-header"
+        >steam游戏ai推荐系统
+        <el-menu
+          :default-active="activeIndex"
+          class="el-menu-demo"
+          mode="horizontal"
+          :ellipsis="false"
+          @select="handleSelect"
+          style="background: transparent; color: white; border-bottom: none; margin-right: auto"
+        >
+          <el-menu-item index="0"> </el-menu-item>
+          <el-menu-item index="1">Processing Center</el-menu-item>
+          <el-menu-item index="2">Order Management</el-menu-item>
+          <el-menu-item index="3">My Tasks</el-menu-item>
+        </el-menu>
+      </el-header>
       <el-main>
         <div class="main-content">
           <el-form :model="form" label-width="auto" class="recommend-form">
             <el-form-item label="Steam ID">
               <el-input placeholder="请输入您的Steam ID" v-model="form.steamId" />
             </el-form-item>
-            <el-form-item label="游戏类型偏好">
-              <el-checkbox-group v-model="form.gameType">
-                <el-checkbox value="角色扮演游戏" name="type"> 角色扮演游戏 </el-checkbox>
-                <el-checkbox value="动作游戏" name="type"> 动作游戏 </el-checkbox>
-                <el-checkbox value="策略游戏" name="type"> 策略游戏 </el-checkbox>
-                <el-checkbox value="肉鸽游戏" name="type"> 肉鸽游戏 </el-checkbox>
-              </el-checkbox-group>
-            </el-form-item>
-            <el-form-item label="回复内容">
-              <el-input v-model="form.reply" type="textarea" />
-            </el-form-item>
             <div class="form-actions">
-              <el-button type="primary" @click="onSubmit" class="primary-btn">提交</el-button>
+              <el-button
+                :aria-disabled="isBtnDisabled"
+                type="primary"
+                @click="onSubmit"
+                class="primary-btn"
+                >提交</el-button
+              >
             </div>
           </el-form>
 
@@ -151,32 +161,53 @@
     max-width: 100%;
   }
 }
+
+.el-menu--horizontal > .el-menu-item:nth-child(1) {
+  margin-right: auto;
+}
 </style>
 
 <script lang="ts" setup>
 import { reactive } from 'vue'
 import axios from 'axios'
+import { useRouter } from 'vue-router'
+import { ref } from 'vue'
+import { ElMessage } from 'element-plus'
+
+let isBtnDisabled = false
+
+const router = useRouter()
+
+const activeIndex = ref('2')
+const handleSelect = (key: string, keyPath: string[]) => {
+  console.log(key, keyPath)
+  if (key === '1') {
+    router.push('/')
+  } else if (key === '2') {
+    router.push('/login')
+  } else if (key === '3') {
+    router.push('/data')
+  }
+}
 
 // do not use same name with ref
 const form = reactive({
   steamId: '',
-  gameType: [],
-  reply: '',
 })
 
 const onSubmit = () => {
-  // console.log('submit!')
-  console.log(form)
-  console.log(form.steamId)
-  console.log(form.gameType.join(', '))
-  form.reply = '正在生成推荐结果，请稍候...'
+  //   form.reply = '正在绑定，请稍候...'
+  ElMessage({
+    message: '正在绑定，请稍候...',
+    type: 'info',
+    duration: 2000,
+  })
+  isBtnDisabled = true
   axios
     .post(
-      '/doRecommendation',
+      '/login',
       {
         userId: form.steamId,
-        userPrompt: form.gameType.join(', '),
-        // reply: form.reply,
       },
       {
         headers: {
@@ -185,13 +216,22 @@ const onSubmit = () => {
       },
     )
     .then((response) => {
+      isBtnDisabled = false
       console.log('Response:', response.data)
-      form.reply = response.data
-      // Handle success (e.g., show a success message)
+      ElMessage({
+        message: '绑定成功！',
+        type: 'success',
+        duration: 2000,
+      })
     })
     .catch((error) => {
+      isBtnDisabled = false
       console.error('Error submitting form:', error)
-      // Handle error (e.g., show an error message)
+      ElMessage({
+        message: '绑定失败，请重试！',
+        type: 'error',
+        duration: 2000,
+      })
     })
 }
 </script>

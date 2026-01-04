@@ -1,48 +1,41 @@
 <template>
   <div class="common-layout">
     <el-container>
-      <el-header class="page-header">steam游戏ai推荐系统
-         <el-menu
-    :default-active="activeIndex"
-    class="el-menu-demo"
-    mode="horizontal"
-    :ellipsis="false"
-    @select="handleSelect"
-  style="background: transparent; color: white; border-bottom: none;margin-right: auto;"
-  >
-    <el-menu-item index="0">
-    </el-menu-item>
-    <el-menu-item index="1">Processing Center</el-menu-item>
-    <el-menu-item index="2">Order Management</el-menu-item>
-    <el-menu-item index="3">My Tasks</el-menu-item>
-  </el-menu>
+      <el-header class="page-header"
+        >steam游戏ai推荐系统
+        <el-menu
+          :default-active="activeIndex"
+          class="el-menu-demo"
+          mode="horizontal"
+          :ellipsis="false"
+          @select="handleSelect"
+          style="background: transparent; color: white; border-bottom: none; margin-right: auto"
+        >
+          <el-menu-item index="0"> </el-menu-item>
+          <el-menu-item index="1">ai推荐</el-menu-item>
+          <el-menu-item index="2">绑定账号</el-menu-item>
+          <el-menu-item index="3">查看游戏库</el-menu-item>
+        </el-menu>
       </el-header>
       <el-main>
         <div class="main-content">
-          <el-form :model="form" label-width="auto" class="recommend-form">
-            <el-form-item label="Steam ID">
-              <el-input placeholder="请输入您的Steam ID" v-model="form.steamId" />
-            </el-form-item>
-            <el-form-item label="游戏类型偏好">
-              <el-checkbox-group v-model="form.gameType">
-                <el-checkbox value="角色扮演游戏" name="type"> 角色扮演游戏 </el-checkbox>
-                <el-checkbox value="动作游戏" name="type"> 动作游戏 </el-checkbox>
-                <el-checkbox value="策略游戏" name="type"> 策略游戏 </el-checkbox>
-                <el-checkbox value="肉鸽游戏" name="type"> 肉鸽游戏 </el-checkbox>
-              </el-checkbox-group>
-            </el-form-item>
-            <el-form-item label="回复内容">
-              <el-input v-model="form.reply" type="textarea" />
-            </el-form-item>
-            <div class="form-actions">
-              <el-button type="primary" @click="onSubmit" class="primary-btn">提交</el-button>
-            </div>
+           <el-form :model="form" label-width="auto" class="recommend-form">
+          <el-table :data="tableData" style="width: 100%">
+            <el-table-column prop="gameName" label="游戏名称" width="180" />
+            <el-table-column prop="gameTime" label="游戏时长" width="180" />
+            <!-- <el-table-column prop="steamId" label="steamId" width="180" /> -->
+          </el-table>
+          <br>
+          <el-pagination
+            background
+            layout="prev, pager, next"
+            :page-size="paginationData.pageSize"
+            :total="paginationData.total"
+            :current-page="paginationData.currentPage"
+            @current-change="handlePageChange"
+          >
+          </el-pagination>
           </el-form>
-
-          <!-- <div class="reply-card">
-            <h3 class="reply-title">推荐结果</h3>
-            <div class="reply-box">{{ form.reply }}</div>
-          </div> -->
         </div>
       </el-main>
       <el-footer class="page-footer"></el-footer>
@@ -87,6 +80,7 @@
   align-items: center;
   /* align-items: flex-start; */
   margin-top: 18px;
+  flex-wrap: wrap;
   /* flex-wrap: wrap; */
 }
 
@@ -172,64 +166,204 @@
 }
 </style>
 
-<script lang="ts" setup>
+<script>
+import { reactive } from 'vue'
+import axios from 'axios'
+import { useRouter } from 'vue-router'
+import { ref } from 'vue'
+
+export default {
+  setup() {
+    const router = useRouter()
+    const activeIndex = ref('3')
+    // const handleSelect = (key, keyPath) => {
+    //   console.log(key, keyPath)
+    //   if (key === '1') {
+    //     router.push('/')
+    //   } else if (key === '2') {
+    //     router.push('/login')
+    //   } else if (key === '3') {
+    //     router.push('/data')
+    //   }
+    // }
+  },
+  data() {
+    return {
+      // activeIndex: ref('3'),
+      // router: useRouter(),
+      paginationData: {
+        currentPage: 1,
+        pageSize: 10,
+        total: 100,
+      },
+      form: reactive({
+        steamId: '',
+        gameType: [],
+        reply: '',
+      }),
+      tableData: [
+        {
+          gameName: 'Tom',
+          gameTime: 1,
+          steamId: '12345',
+        },
+        {
+          gameName: 'To',
+          gameTime: 2,
+          steamId: '12345',
+        },
+        {
+          gameName: 'Tm',
+          gameTime: 3,
+          steamId: '12345',
+        },
+        {
+          gameName: 'm',
+          gameTime: 4,
+          steamId: '12345',
+        },
+      ],
+    }
+  },
+  methods: {
+    handlePageChange(page) {
+      this.paginationData.currentPage = page
+      axios
+        .get(
+          `/getData?page=${this.paginationData.currentPage}&pageSize=${this.paginationData.pageSize}`,
+        )
+        .then((response) => {
+          console.log('Response:', response.data.data.gameList)
+          this.tableData = response.data.data.gameList
+          // console.log('Response:', response.data)
+          this.paginationData.total = response.data.data.total
+        })
+        .catch((error) => {
+          console.error('Error fetching questions:', error)
+        })
+    },
+    
+    onSubmit() {
+      // console.log('submit!')
+      console.log(this.form)
+      console.log(this.form.steamId)
+      console.log(this.form.gameType.join(', '))
+      this.form.reply = '正在生成推荐结果，请稍候...'
+      axios
+        .post(
+          '/doRecommendation',
+          {
+            userId: this.form.steamId,
+            userPrompt: this.form.gameType.join(', '),
+            // reply: this.form.reply,
+          },
+          {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          },
+        )
+        .then((response) => {
+          console.log('Response:', response.data)
+          this.form.reply = response.data
+          // Handle success (e.g., show a success message)
+        })
+        .catch((error) => {
+          console.error('Error submitting form:', error)
+          // Handle error (e.g., show an error message)
+        })
+    },
+
+     handleSelect  (key, keyPath)  {
+      console.log(key, keyPath)
+      if (key === '1') {
+        this.$router.push('/')
+      } else if (key === '2') {
+        this.$router.push('/login')
+      } else if (key === '3') {
+        this.$router.push('/data')
+      }
+    },
+  },
+  mounted() {
+    this.handlePageChange(this.paginationData.currentPage)
+  },
+}
+</script>
+
+<!-- <script lang="ts" setup>
 import { reactive } from 'vue'
 import axios from 'axios'
 
 import { useRouter } from 'vue-router'
 
-import { ref } from 'vue'
+import { ref } from 'vue'  
 
-const router = useRouter()
+// const router = useRouter()
 
-const activeIndex = ref('3')
-const handleSelect = (key: string, keyPath: string[]) => {
-  console.log(key, keyPath)
-  if (key === '1') {
-    router.push('/')
-  } else if (key === '2') {
-    router.push('/login')
-  } else if (key === '3') {
-    router.push('/data')
-  }
-}
-
+// const activeIndex = ref('3')
+// const handleSelect = (key: string, keyPath: string[]) => {
+//   console.log(key, keyPath)
+//   if (key === '1') {
+//     router.push('/')
+//   } else if (key === '2') {
+//     router.push('/login')
+//   } else if (key === '3') {
+//     router.push('/data')
+//   }
+// }
 
 // do not use same name with ref
-const form = reactive({
-  steamId: '',
-  gameType: [],
-  reply: '',
-})
+// const form = reactive({
+//   steamId: '',
+//   gameType: [],
+//   reply: '',
+// })
 
-const onSubmit = () => {
-  // console.log('submit!')
-  console.log(form)
-  console.log(form.steamId)
-  console.log(form.gameType.join(', '))
-  form.reply = '正在生成推荐结果，请稍候...'
-  axios
-    .post(
-      '/doRecommendation',
-      {
-        userId: form.steamId,
-        userPrompt: form.gameType.join(', '),
-        // reply: form.reply,
-      },
-      {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      },
-    )
-    .then((response) => {
-      console.log('Response:', response.data)
-      form.reply = response.data
-      // Handle success (e.g., show a success message)
-    })
-    .catch((error) => {
-      console.error('Error submitting form:', error)
-      // Handle error (e.g., show an error message)
-    })
-}
-</script>
+// const onSubmit = () => {
+//   // console.log('submit!')
+//   console.log(form)
+//   console.log(form.steamId)
+//   console.log(form.gameType.join(', '))
+//   form.reply = '正在生成推荐结果，请稍候...'
+//   axios
+//     .post(
+//       '/doRecommendation',
+//       {
+//         userId: form.steamId,
+//         userPrompt: form.gameType.join(', '),
+//         // reply: form.reply,
+//       },
+//       {
+//         headers: {
+//           'Content-Type': 'application/json',
+//         },
+//       },
+//     )
+//     .then((response) => {
+//       console.log('Response:', response.data)
+//       form.reply = response.data
+//       // Handle success (e.g., show a success message)
+//     })
+//     .catch((error) => {
+//       console.error('Error submitting form:', error)
+//       // Handle error (e.g., show an error message)
+//     })
+// }
+
+// const handlePageChange=(page) => {
+//       this.paginationData.currentPage = page
+//       axios
+//         .get(
+//           `/getData?page=${this.paginationData.currentPage}&pageSize=${this.paginationData.pageSize}`,
+//         )
+//         .then((response) => {
+//           this.tableData = response.data.data.GameList
+//           console.log('Response:', response.data)
+//           this.paginationData.total = response.data.data.total
+//         })
+//         .catch((error) => {
+//           console.error('Error fetching questions:', error)
+//         })
+//     }
+</script> -->

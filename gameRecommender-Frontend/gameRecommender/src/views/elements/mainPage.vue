@@ -1,21 +1,21 @@
 <template>
   <div class="common-layout">
     <el-container>
-      <el-header class="page-header">steam游戏ai推荐系统
-         <el-menu
-    :default-active="activeIndex"
-    class="el-menu-demo"
-    mode="horizontal"
-    :ellipsis="false"
-    @select="handleSelect"
-  style="background: transparent; color: white; border-bottom: none;margin-right: auto;"
-  >
-    <el-menu-item index="0">
-    </el-menu-item>
-    <el-menu-item index="1">Processing Center</el-menu-item>
-    <el-menu-item index="2">Order Management</el-menu-item>
-    <el-menu-item index="3">My Tasks</el-menu-item>
-  </el-menu>
+      <el-header class="page-header"
+        >steam游戏ai推荐系统
+        <el-menu
+          :default-active="activeIndex"
+          class="el-menu-demo"
+          mode="horizontal"
+          :ellipsis="false"
+          @select="handleSelect"
+          style="background: transparent; color: white; border-bottom: none; margin-right: auto"
+        >
+          <el-menu-item index="0"></el-menu-item>
+          <el-menu-item index="1">ai推荐</el-menu-item>
+          <el-menu-item index="2">绑定账号</el-menu-item>
+          <el-menu-item index="3">查看游戏库</el-menu-item>
+        </el-menu>
       </el-header>
       <el-main>
         <div class="main-content">
@@ -94,6 +94,7 @@
   /* align-items: flex-start; */
   margin-top: 18px;
   /* flex-wrap: wrap; */
+  flex-grow: 1;
 }
 
 .recommend-form {
@@ -101,7 +102,7 @@
   padding: 18px;
   border-radius: 12px;
   width: 100%;
-  height: 100%;
+  height: 200%;
   box-shadow: 0 6px 20px rgba(16, 24, 40, 0.06);
   transition:
     transform 0.18s ease,
@@ -199,7 +200,6 @@ const handleSelect = (key: string, keyPath: string[]) => {
     router.push('/data')
   }
 }
-
 
 // do not use same name with ref
 const form = reactive({

@@ -12,9 +12,9 @@
           style="background: transparent; color: white; border-bottom: none; margin-right: auto"
         >
           <el-menu-item index="0"> </el-menu-item>
-          <el-menu-item index="1">Processing Center</el-menu-item>
-          <el-menu-item index="2">Order Management</el-menu-item>
-          <el-menu-item index="3">My Tasks</el-menu-item>
+          <el-menu-item index="1">ai推荐</el-menu-item>
+          <el-menu-item index="2">绑定账号</el-menu-item>
+          <el-menu-item index="3">查看游戏库</el-menu-item>
         </el-menu>
       </el-header>
       <el-main>

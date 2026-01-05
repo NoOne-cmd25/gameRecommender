@@ -2,6 +2,7 @@ package com.example.gameRecommender.service.impl;
 
 import com.example.gameRecommender.mapper.UserMapper;
 import com.example.gameRecommender.model.Game;
+import com.example.gameRecommender.model.GamePage;
 import com.example.gameRecommender.service.UserService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,6 +15,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -117,5 +119,20 @@ public class UserServiceImpl implements UserService {
         return "绑定成功！";
     }
 
+    public GamePage Page(Integer start, Integer pageSize)
+    {
+        //获取总的记录数；
+        Integer total=userMapper.count();
+
+        //获取分页查询结果列表；
+        start = (start-1)*pageSize;
+        List<Game> gameList=userMapper.page(start, pageSize);
+
+        GamePage gamePage=new GamePage();
+        gamePage.setTotal(total);
+        gamePage.setGameList(gameList);
+
+        return gamePage;
+    }
 
 }

@@ -3,6 +3,7 @@ package com.example.gameRecommender.mapper;
 import com.example.gameRecommender.model.Game;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
@@ -15,4 +16,10 @@ public interface UserMapper {
 
     @Select("select * from games where steamId = #{steamid}")
         public List<Game> select(String steamid);
+
+    @Select("SELECT COUNT(*) FROM games")
+    public int count();
+
+    @Select("SELECT * FROM games limit #{start},#{pageSize}")
+    public List<Game> page(@Param("start")Integer start, @Param("pageSize")Integer pageSize);
 }
